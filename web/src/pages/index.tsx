@@ -57,6 +57,30 @@ export default function Home({ statusCode, users }: TGetServerSideProps) {
     }));
   }
 
+  const handlePrevPage = () => {
+    if (paginationData.activePage !== 1) {
+      handlePageChange(paginationData.activePage - 1)
+      setPaginationData((prev) => ({ ...prev, activePage: paginationData.activePage - 1 }))
+    }
+  }
+
+  const handleNextPage = () => {
+    if (paginationData.activePage !== paginationData.pagesCount) {
+      handlePageChange(paginationData.activePage + 1)
+      setPaginationData((prev) => ({ ...prev, activePage: paginationData.activePage + 1 }))
+    }
+  }
+
+  const handleLastPage = () => {
+    handlePageChange(paginationData.pagesCount)
+    setPaginationData((prev) => ({ ...prev, activePage: paginationData.pagesCount }))
+  }
+
+  const handleFirstPage = () => {
+    handlePageChange(1)
+    setPaginationData((prev) => ({ ...prev, activePage: 1 }))
+  }
+
   if (statusCode !== 200) {
     return <Alert variant={'danger'}>Ошибка {statusCode} при загрузке данных</Alert>
   }
@@ -104,6 +128,8 @@ export default function Home({ statusCode, users }: TGetServerSideProps) {
           {/*TODO add pagination*/}
 
           <Pagination>
+            <Pagination.First onClick={handleFirstPage} />
+            <Pagination.Prev onClick={handlePrevPage} />
             {paginationData.usersData.slice(0, paginationData.pagesCount).map((_, index) => {
               index = index + 1
 
@@ -117,6 +143,8 @@ export default function Home({ statusCode, users }: TGetServerSideProps) {
                 </Pagination.Item>
               );
             })}
+            <Pagination.Next onClick={handleNextPage} />
+            <Pagination.Last active={false} onClick={handleLastPage} />
           </Pagination>
 
         </Container>
